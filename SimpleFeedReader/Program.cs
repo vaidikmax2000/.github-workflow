@@ -3,8 +3,7 @@ namespace SimpleFeedReader;
 public class Program
 {
     public static void Main(string[] args)
-    {
-        ExecuteQueryDB("Swapnil");
+    {       
         GetDatabasePassword();
         DisplayMessage("swapnil");
         ExecuteQuery("swapnil");
@@ -36,18 +35,5 @@ public class Program
     {
         return "secretpassword123";
     }
-
-    // SQL Injection Vulnerability Example
-    public static void ExecuteQueryDB(string userInput)
-    {
-        using (var connection = new SqlConnection("your_connection_string"))
-        {
-            using (var command = new SqlCommand("SELECT * FROM Users WHERE Username = @username", connection))
-            {
-                command.Parameters.AddWithValue("@username", userInput);
-                connection.Open();
-                // Execute the query
-            }
-        }
-    }
+    
 }
