@@ -4,7 +4,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        ExecuteQuery("Swapnil");
+        ExecuteQueryDB("Swapnil");
         GetDatabasePassword();
         DisplayMessage("swapnil");
         ExecuteQuery("swapnil");
@@ -26,19 +26,19 @@ public class Program
     }
 
      // Cross-Site Scripting (XSS) Vulnerability Example
-    public string DisplayMessage(string message)
+    public static string DisplayMessage(string message)
     {
         return "<div>" + message + "</div>";
     }
 
     // Hardcoded Password Vulnerability Example
-    public string GetDatabasePassword()
+    public static string GetDatabasePassword()
     {
         return "secretpassword123";
     }
 
     // SQL Injection Vulnerability Example
-    public void ExecuteQuery(string userInput)
+    public static void ExecuteQueryDB(string userInput)
     {
         using (var connection = new SqlConnection("your_connection_string"))
         {
