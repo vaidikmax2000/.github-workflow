@@ -4,6 +4,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        GetDatabasePassword();
+        DisplayMessage("swapnil");
         ExecuteQuery("swapnil");
         CreateHostBuilder(args).Build().Run();
     }
@@ -20,5 +22,17 @@ public class Program
     {
         string query = "SELECT * FROM Users WHERE Username = '" + userInput + "'";
         // Execute the query
+    }
+
+     // Cross-Site Scripting (XSS) Vulnerability Example
+    public string DisplayMessage(string message)
+    {
+        return "<div>" + message + "</div>";
+    }
+
+    // Hardcoded Password Vulnerability Example
+    public string GetDatabasePassword()
+    {
+        return "secretpassword123";
     }
 }
