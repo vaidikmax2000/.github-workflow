@@ -46,7 +46,7 @@ jobs:
             }
            }'\
         -H "Content-Type: application/json" \
-        https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/boards/3
+        https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/boards/2
       env:
         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
       continue-on-error: true
