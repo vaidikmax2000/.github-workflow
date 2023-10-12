@@ -36,7 +36,7 @@ jobs:
         --data '{
           "fields": {
             "project": {
-              "key": "PROJECT_KEY"
+              "key": "KAN"
             },
             "summary": "Automated GitHub Action Failure",
             "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
@@ -46,7 +46,7 @@ jobs:
           }
         }' \
         -H "Content-Type: application/json" \
-        https://testjiragithubaction.atlassian.net/jira/software/projects/KAN/issues/
+        https://testjiragithubaction.atlassian.net/jira/software/projects/KAN/boards/2
       env:
         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
       continue-on-error: true
