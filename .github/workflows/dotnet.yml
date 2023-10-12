@@ -6,39 +6,42 @@
         jobs:
             build:
                 runs-on: ubuntu-latest
-
                 steps:
                 - name: Checkout code
-                    uses:actions/checkout@v2
+                  uses: actions/checkout@v2
 
                 - name: Setup .NET
-                    uses:actions/setup-dotnet@v1
-                    with:dotnet-version:'5.0.x'
+                  uses: actions/setup-dotnet@v1
+                  with:
+                        dotnet-version: '5.0.x'
 
                 - name: Restore dependencies
-                    run:dotnet restore
+                  run: dotnet restore
 
                 - name: Build
-                    run:dotnet build --configuration Release
+                  run: dotnet build --configuration Release
 
                 - name: Test
-                    run:dotnet test --configuration Release --logger "trx;LogFileName=test_results.xml"
+                  run: dotnet test --configuration Release --logger "trx;LogFileName=test_results.xml"
 
                 - name: Publish test results
-                    uses:EnricoMi/publish-unit-test-result-action@v1
-                    with:files:'**/test_results.xml'
-                        format:VSTest
+                  uses: EnricoMi/publish-unit-test-result-action@v1
+                  with:
+                        files: '**/test_results.xml'
+                        format: VSTest
 
                 - name: Create Jira ticket on failure
-                    if:${{ failure() }}
-                    uses:atlassian/gajira-create-issue@v1.1.0
-                    with:server-url:${{ secrets.JIRA_SERVER_URL }}
-                        project-key:${{ secrets.JIRA_PROJECT_KEY }}
-                        issue-type:Bug
-                        summary:'Build failed on branch ${{ github.ref }}'
-                        description:|The build failed on branch ${{ github.ref }}. Please investigate.
-                        priority:High
-                        labels:'build-failure'
-                        assignee:${{ secrets.JIRA_ASSIGNEE }}
-                        basic-auth:${{ secrets.JIRA_BASIC_AUTH }}
+                  if: ${{ failure() }}
+                  uses: atlassian/gajira-create-issue@v1.1.0
+                  with:
+                        server-url: ${{ secrets.JIRA_SERVER_URL }}
+                        project-key: ${{ secrets.JIRA_PROJECT_KEY }}
+                        issue-type: Bug
+                        summary: 'Build failed on branch ${{ github.ref }}'
+                        description: |
+                            The build failed on branch ${{ github.ref }}. Please investigate.
+                        priority: High
+                        labels: 'build-failure'
+                        assignee: ${{ secrets.JIRA_ASSIGNEE }}
+                        basic-auth: ${{ secrets.JIRA_BASIC_AUTH }}
    
