@@ -41,12 +41,12 @@ jobs:
                "summary": "Automated GitHub Action Failure",
                "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
                "issuetype": {
-                "name": "Bug"
+                "id": "10000"
              }
           }
         }' \
         -H "Content-Type: application/json" \
-        https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/issues/SWAP-2
+        https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/issues/SWAP-1
       env:
         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
       continue-on-error: true
