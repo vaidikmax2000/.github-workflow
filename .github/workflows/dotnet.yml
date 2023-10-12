@@ -24,12 +24,6 @@
                 - name: Test
                   run: dotnet test --configuration Release --logger "trx;LogFileName=test_results.xml"
 
-                - name: Publish test results
-                  uses: EnricoMi/publish-unit-test-result-action@v1
-                  with:
-                        files: '**/test_results.xml'
-                        format: VSTest
-
                 - name: Create Jira ticket on failure
                   if: ${{ failure() }}
                   uses: atlassian/gajira-create-issue@v1.1.0
