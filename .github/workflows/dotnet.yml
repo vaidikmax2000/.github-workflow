@@ -32,20 +32,20 @@ jobs:
       run: |
         echo "Tests failed. Creating Jira ticket..."
         curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-        -X POST \
-        --data '{
-          "fields": {
-            "project": {
-              "key": "SWAP"
-            },
-            "summary": "Automated GitHub Action Failure",
-            "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
-            "issuetype": {
-              "name": "Bug"
-            }           
-          }
-        }' \
-        -H "Content-Type: application/json" \        
+             -X POST \
+             --data '{
+                "fields": {
+                  "project": {
+                    "key": "SWAP"
+                },
+               "summary": "Automated GitHub Action Failure",
+               "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
+               "issuetype": {
+                  "name": "Bug"
+               }
+            }
+           }'\
+        -H "Content-Type: application/json" \
         https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/issues
       env:
         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
