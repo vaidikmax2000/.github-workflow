@@ -34,7 +34,7 @@
                         summary: 'Build failed on branch ${{ github.ref }}'
                         description: |
                             The build failed on branch ${{ github.ref }}. Please investigate.
-                        priority: Low
+                        priority: High
                         labels: 'build-failure'
                         assignee: ${{ secrets.JIRA_ASSIGNEE }}
                         basic-auth: ${{ secrets.JIRA_BASIC_AUTH }}
