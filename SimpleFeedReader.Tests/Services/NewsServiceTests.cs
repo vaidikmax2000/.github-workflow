@@ -25,7 +25,7 @@ public class NewsServiceTests
     public async Task Returns_News_Stories_Given_Valid_Uri()
     {
         // Arrange
-        var feedUrl = "https://azure.microsoft.com/en-us/blog/fee/";
+        var feedUrl = "https://azure.microsoft.com/en-us/blog/fe/";
 
         // Act
         List<NewsStoryViewModel> result =
