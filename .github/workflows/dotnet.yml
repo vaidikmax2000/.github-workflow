@@ -36,12 +36,12 @@ jobs:
         --data '{
           "fields": {
             "project": {
-              "key": "KAN"
+              "key": "SWAP"
             },
             "summary": "Automated GitHub Action Failure",
             "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
             "issuetype": {
-              "id": "10000"
+              "name": "Bug"
             }           
           }
         }' \
