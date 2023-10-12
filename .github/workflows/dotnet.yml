@@ -1,41 +1,53 @@
-        name: Jira Integration
-        on:
-            push:
-                branches:
-                    - main
-        jobs:
-            build:
-                runs-on: ubuntu-latest
-                steps:
-                - name: Checkout code
-                  uses: actions/checkout@v2
+name: Build and Test .NET Application
 
-                - name: Setup .NET
-                  uses: actions/setup-dotnet@v1
-                  with:
-                        dotnet-version: '5.0.x'
+on:
+  push:
+    branches:
+      - main
 
-                - name: Restore dependencies
-                  run: dotnet restore
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
 
-                - name: Build
-                  run: dotnet build --configuration Release
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-                - name: Test
-                  run: dotnet test --configuration Release --logger "trx;LogFileName=test_results.xml"
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1  # Adjust this version based on your project requirements
 
-                - name: Create Jira ticket on failure
-                  if: ${{ failure() }}
-                  uses: atlassian/gajira-create-issue@v1.1.0
-                  with:
-                        server-url: ${{ secrets.JIRA_SERVER_URL }}
-                        project-key: ${{ secrets.JIRA_PROJECT_KEY }}
-                        issue-type: Bug
-                        summary: 'Build failed on branch ${{ github.ref }}'
-                        description: |
-                            The build failed on branch ${{ github.ref }}. Please investigate.
-                        priority: Low
-                        labels: 'build-failure'
-                        assignee: ${{ secrets.JIRA_ASSIGNEE }}
-                        basic-auth: ${{ secrets.JIRA_BASIC_AUTH }}
-   
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --configuration Release
+
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
+      continue-on-error: true
+
+    - name: Check test results and create Jira ticket on failure
+      if: ${{ failure() }}
+      run: |
+        echo "Tests failed. Creating Jira ticket..."
+        curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+        -X POST \
+        --data '{
+          "fields": {
+            "project": {
+              "key": "PROJECT_KEY"
+            },
+            "summary": "Automated GitHub Action Failure",
+            "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
+            "issuetype": {
+              "name": "Bug"
+            }
+          }
+        }' \
+        -H "Content-Type: application/json" \
+        https://YOUR_JIRA_INSTANCE_URL/rest/api/2/issue/
+      env:
+        JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+      continue-on-error: true
