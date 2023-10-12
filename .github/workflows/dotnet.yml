@@ -1,37 +1,44 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+        name: Jira Integration
+        on:
+            push:
+                branches:
+                    - main
+        jobs:
+            build:
+                runs-on: ubuntu-latest
 
-name: .NET
+                steps:
+                - name: Checkout code
+                    uses:actions/checkout@v2
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+                - name: Setup .NET
+                    uses:actions/setup-dotnet@v1
+                    with:dotnet-version:'5.0.x'
 
-jobs:
-  build:
+                - name: Restore dependencies
+                    run:dotnet restore
 
-    runs-on: ubuntu-latest
+                - name: Build
+                    run:dotnet build --configuration Release
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish SimpleFeedReader/SimpleFeedReader.csproj -c Release -o website
+                - name: Test
+                    run:dotnet test --configuration Release --logger "trx;LogFileName=test_results.xml"
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-       name: website
-       path: SimpleFeedReader/website
-       if-no-files-found: error  
+                - name: Publish test results
+                    uses:EnricoMi/publish-unit-test-result-action@v1
+                    with:files:'**/test_results.xml'
+                        format:VSTest
+
+                - name: Create Jira ticket on failure
+                    if:${{ failure() }}
+                    uses:atlassian/gajira-create-issue@v1.1.0
+                    with:server-url:${{ secrets.JIRA_SERVER_URL }}
+                        project-key:${{ secrets.JIRA_PROJECT_KEY }}
+                        issue-type:Bug
+                        summary:'Build failed on branch ${{ github.ref }}'
+                        description:|The build failed on branch ${{ github.ref }}. Please investigate.
+                        priority:High
+                        labels:'build-failure'
+                        assignee:${{ secrets.JIRA_ASSIGNEE }}
+                        basic-auth:${{ secrets.JIRA_BASIC_AUTH }}
+   
