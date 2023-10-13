@@ -33,7 +33,7 @@ jobs:
         echo "Tests failed. Creating Jira ticket..."
         JIRA_URL="https://testjiragithubaction.atlassian.net/"
         USERNAME=${{ secrets.JIRA_USERNAME }}
-        API_TOKEN=${{ secrets.JIRA_TOKEN }}
+        API_TOKEN=${{ secrets.JIRA_API_TOKEN }}
         curl -D- -u "$USERNAME:$API_TOKEN" -X POST --data "{
                                     \"fields\": {
                                       \"project\": {
