@@ -31,22 +31,21 @@ jobs:
       if: ${{ failure() }}
       run: |
         echo "Tests failed. Creating Jira ticket..."
-        curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-             -X POST \
-             --data '{
-              "fields": {
-                "project": {
-                  "key": "SWAP"
-                },
-               "summary": "Automated GitHub Action Failures",
-               "description": "Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }}).",
-               "issuetype": {
-                "id": "10000"
-             }
-          }
-        }' \
-        -H "Content-Type: application/json" \
-        https://testjiragithubaction.atlassian.net/jira/software/projects/SWAP/issues/SWAP-1
+        JIRA_URL="https://testjiragithubaction.atlassian.net/"
+        USERNAME=${{ secrets.JIRA_USERNAME }}
+        API_TOKEN=${{ secrets.JIRA_TOKEN }}
+        curl -D- -u "$USERNAME:$API_TOKEN" -X POST --data "{
+                                    \"fields\": {
+                                      \"project\": {
+                                        \"key\": \"SWAP\"
+                                      },
+                                      \"summary\": \"SonarQube analysis failed with error code $status!\",
+                                      \"description\": \"Tests failed in GitHub Action workflow. See GitHub run [${{ github.run_number }}](${{ github.run_url }})\",
+                                      \"issuetype\": {
+                                        \"name\": \"Task\"
+                                      }
+                                    }
+                                  }" -H "Content-Type: application/json" -v --url "$JIRA_URL/rest/api/2/issue"
       env:
         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
       continue-on-error: true
